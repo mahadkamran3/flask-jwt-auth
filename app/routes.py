@@ -11,7 +11,13 @@ auth_bp = Blueprint('auth', __name__)
 @auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    hashed_pw = generate_password_hash(data['password'], method='sha256')
+    
+    # Check if user already exists
+    if User.query.filter_by(username=data['username']).first():
+        return jsonify({'message': 'Username already exists'}), 400
+    
+    # Use default scrypt method (more secure than sha256)
+    hashed_pw = generate_password_hash(data['password'])
 
     new_user = User(username=data['username'], password=hashed_pw)
     db.session.add(new_user)
@@ -30,7 +36,7 @@ def login():
         'user_id': user.id,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
     }, current_app.config['SECRET_KEY'], algorithm="HS256")
-
+    
     return jsonify({'token': token})
 
 @auth_bp.route('/protected', methods=['GET'])
