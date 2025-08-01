@@ -108,6 +108,113 @@ Authorization: Bearer <JWT_TOKEN>
 
 ---
 
+## 🔧 Testing with curl
+
+### 1. Register a new user
+```bash
+curl -X POST http://127.0.0.1:5000/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "testuser",
+    "password": "testpassword123"
+  }'
+```
+
+**Expected Response:**
+```json
+{
+  "message": "User registered successfully"
+}
+```
+
+### 2. Login to get JWT token
+```bash
+curl -X POST http://127.0.0.1:5000/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "testuser",
+    "password": "testpassword123"
+  }'
+```
+
+**Expected Response:**
+```json
+{
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+}
+```
+
+### 3. Access protected route with token
+```bash
+# Replace YOUR_JWT_TOKEN with the actual token from login response
+curl -X GET http://127.0.0.1:5000/protected \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Expected Response:**
+```json
+{
+  "message": "Access granted to protected route",
+  "user": "testuser"
+}
+```
+
+### 4. Test invalid token (should fail)
+```bash
+curl -X GET http://127.0.0.1:5000/protected \
+  -H "Authorization: Bearer invalid_token_here"
+```
+
+**Expected Response:**
+```json
+{
+  "message": "Token is invalid"
+}
+```
+
+### 5. Test without token (should fail)
+```bash
+curl -X GET http://127.0.0.1:5000/protected
+```
+
+**Expected Response:**
+```json
+{
+  "message": "Token is missing"
+}
+```
+
+### 💡 curl Tips
+
+**For Windows Command Prompt, use double quotes:**
+```cmd
+curl -X POST http://127.0.0.1:5000/register ^
+  -H "Content-Type: application/json" ^
+  -d "{\"username\": \"testuser\", \"password\": \"testpassword123\"}"
+```
+
+**For PowerShell, escape quotes or use single quotes:**
+```powershell
+curl -X POST http://127.0.0.1:5000/register `
+  -H "Content-Type: application/json" `
+  -d '{"username": "testuser", "password": "testpassword123"}'
+```
+
+**Save token to variable (Bash/Linux/macOS):**
+```bash
+# Get token and save to variable
+TOKEN=$(curl -s -X POST http://127.0.0.1:5000/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "testuser", "password": "testpassword123"}' \
+  | grep -o '"token":"[^"]*"' | cut -d'"' -f4)
+
+# Use the token
+curl -X GET http://127.0.0.1:5000/protected \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+---
+
 ## 📝 License
 
 MIT License. See [LICENSE](LICENSE) for details.
