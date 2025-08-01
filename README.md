@@ -46,3 +46,83 @@ venv\Scripts\activate
 source venv/bin/activate
 pip install -r requirements.txt
 python run.py
+```
+
+---
+
+## 🚦 Usage
+
+1. Start the server:
+   ```bash
+   python run.py
+   ```
+2. The API will be available at `http://127.0.0.1:5000/`
+
+---
+
+## 🛠️ API Endpoints
+
+### Register a new user
+`POST /register`
+
+**Request JSON:**
+```json
+{
+  "username": "your_username",
+  "password": "your_password"
+}
+```
+
+### Login
+`POST /login`
+
+**Request JSON:**
+```json
+{
+  "username": "your_username",
+  "password": "your_password"
+}
+```
+**Response:**
+```json
+{
+  "token": "<JWT_TOKEN>"
+}
+```
+
+### Protected Route Example
+`GET /protected`
+
+**Headers:**
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+---
+
+## 🧪 Testing with Postman
+
+1. Register a user via `POST /register`.
+2. Login via `POST /login` to get a JWT token.
+3. Access protected routes by adding the token to the `Authorization` header as `Bearer <token>`.
+
+---
+
+## 📝 License
+
+MIT License. See [LICENSE](LICENSE) for details.
+
+---
+
+## 🙏 Credits
+
+- [Flask](https://flask.palletsprojects.com/)
+- [PyJWT](https://pyjwt.readthedocs.io/)
+- [bcrypt](https://pypi.org/project/bcrypt/)
+
+---
+
+## 📚 Further Reading
+
+- [JWT.io Introduction](https://jwt.io/introduction/)
+- [Flask Documentation](https://flask.palletsprojects.com/)
